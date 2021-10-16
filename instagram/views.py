@@ -32,3 +32,15 @@ def login_user(request):
         return HttpResponse("user logged in ")
     else:
         return HttpResponse("user ot logged in ")
+
+def signup(request):
+    pass
+
+# user profile
+def user_profile(request, username):
+    template = loader.get_template('insta/profile.html')
+    profile = Profile.objects.get(user=request.user)
+    posts = Post.objects.filter(author__user__username=request.user.username)
+    # posts = Post.objects.all()
+    context = {'profile': profile, 'posts': posts}
+    return HttpResponse(template.render(context, request))
