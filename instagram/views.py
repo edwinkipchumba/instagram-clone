@@ -67,3 +67,23 @@ def like_post(request, postid):
         post.likes += 1
     post.save()
     return redirect(reverse('home'))
+
+# adding post
+def add_post(request):
+    template = loader.get_template('insta/post.html')
+    profile = Profile.objects.get(user=request.user)
+    if request.method == "POST":
+        profile = Profile.objects.get(user=request.user)
+        form = PostForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            fs = form.save(commit=False)
+            fs.author = profile
+            fs.save()
+            return redirect(reverse('home'))
+    else:
+        form = PostForm()
+        pass
+
+    context = {'form': form ,'profile':profile}
+    return HttpResponse(template.render(context, request))
