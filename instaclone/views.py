@@ -27,3 +27,7 @@ def signup(request):
             profile = Profile.objects.create(user=user)
 
             return HttpResponseRedirect('/accounts/login')
+        else:
+            form = SignUpForm()
+
+    return render(request, 'registration/signup.html', {'form': form})
