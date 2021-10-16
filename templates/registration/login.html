@@ -24,3 +24,28 @@
 <!-- custom css -->
 <link rel="stylesheet" href="{% static 'login.css' %}">
 
+<div id="wrapper">
+    <div class="main-content">
+      <div class="header">
+        <img src="https://i.imgur.com/zqpwkLQ.png" />
+      </div>
+      <div class="l-part">
+          <form method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+              {% for field in form.visible_fields %}
+                  {{ field.errors }}
+                  {{ field }}
+              {% endfor %}
+              <input type="submit" value="Submit" class="btn">
+          </form>
+      </div>
+    </div>
+      <div class="sub-content">
+      <div class="s-part">
+        Don't have an account?<a href="{% url 'signup' %}">Sign up</a>
+      </div>
+    </div>
+  </div>
+  
+  {% endblock %}
+
