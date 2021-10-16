@@ -44,3 +44,12 @@ def user_profile(request, username):
     # posts = Post.objects.all()
     context = {'profile': profile, 'posts': posts}
     return HttpResponse(template.render(context, request))
+
+# comment
+def add_comment(request):
+    if request.POST:
+        description, id = request.POST['description'], request.POST['demo']
+        post = Post.objects.get(pk=id)
+        if description is not None:
+            Comment.objects.create(post_linked=post, description=description, user=request.user)
+            return redirect(reverse('home'))
