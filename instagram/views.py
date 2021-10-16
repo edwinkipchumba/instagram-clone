@@ -53,3 +53,17 @@ def add_comment(request):
         if description is not None:
             Comment.objects.create(post_linked=post, description=description, user=request.user)
             return redirect(reverse('home'))
+        
+        # like post
+def like_post(request, postid):
+    post = Post.objects.get(id=postid)
+    try:
+        is_Liked = Like.objects.get(post_linked=post, user__username=request.user.username)
+        Like.objects.filter(post_linked=post, user__username=request.user.username).delete()
+        post.likes -= 1
+    except Like.DoesNotExist:
+
+        Like.objects.create(post_linked=post, user=request.user)
+        post.likes += 1
+    post.save()
+    return redirect(reverse('home'))
