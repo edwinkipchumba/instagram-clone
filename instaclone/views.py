@@ -18,3 +18,12 @@ def signup(request):
             last_name = form.cleaned_data['last_name']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
+            
+            user = User.objects.create_user(username=username,
+                                            password=password,
+                                            first_name=first_name,
+                                            last_name=last_name,
+                                            email=email)
+            profile = Profile.objects.create(user=user)
+
+            return HttpResponseRedirect('/accounts/login')
