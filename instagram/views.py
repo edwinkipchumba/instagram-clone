@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 def home(request):
-    template = loader.get_template('insta/home.html')
+    template = loader.get_template('instagram/home.html')
 
     if request.user.is_anonymous:
         context = {}
@@ -38,7 +38,7 @@ def signup(request):
 
 # user profile
 def user_profile(request, username):
-    template = loader.get_template('insta/profile.html')
+    template = loader.get_template('instagram/profile.html')
     profile = Profile.objects.get(user=request.user)
     posts = Post.objects.filter(author__user__username=request.user.username)
     # posts = Post.objects.all()
@@ -70,7 +70,7 @@ def like_post(request, postid):
 
 # adding post
 def add_post(request):
-    template = loader.get_template('insta/post.html')
+    template = loader.get_template('instagram/post.html')
     profile = Profile.objects.get(user=request.user)
     if request.method == "POST":
         profile = Profile.objects.get(user=request.user)
@@ -90,7 +90,7 @@ def add_post(request):
 
 #   edit profile
 def edit_profile(request, username):
-    template = loader.get_template('insta/edit_profile.html')
+    template = loader.get_template('instagram/edit_profile.html')
     user = User.objects.get(username=request.user.username)
     profile = Profile.objects.get(user=request.user)
 

@@ -23,6 +23,10 @@ import os
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/',include('django.contrib.auth.urls')),
-    path('',include('insta.urls')),
+    path('',include('instagram.urls')),
     path('signup/',views.signup,name="signup"),
-]+static(settings.MEDIA_URL,document_root=os.path.join(settings.BASE_DIR,'media'))
+    
+] +static(settings.MEDIA_URL,document_root=os.path.join(settings.BASE_DIR,'media'))
+
+
+

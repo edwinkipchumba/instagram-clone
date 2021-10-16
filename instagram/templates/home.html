@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% if user.is_authenticated %}
+
+      {% include "insta/nav.html" %}
+
+  <div class="posts-list">
+    {% for post in posts %}
+    <div class="post">
+    <div class="post-header">
+      <div class="profile-image">
+        {% if not post.author.profile_pic %}
+          <a href="/user/{{ post.author.user.username }}"><img class="rounded-circle avatar"  src="{% static 'img/avatar-2.jpg' %}"  alt="{{ post.author.user.username }}" data-holder-rendered="true"></a>
+        {% else %}
+         <a href="/user/{{ post.author.user.username }}"><img class="rounded-circle avatar"  src="{{ post.author.profile_pic.url }}"  alt="{{ post.author.user.username }}" data-holder-rendered="true"></a>
+        {% endif %}
+      </div>
+      <div class="profile-name">
+        <a class="profile-link" href="/user/{{ post.author.user.username }}">{{ post.author.user.username }} </a>
+      </div>
+      <div class="location">
+<!--        {{ post.location }}-->
+      </div>
+
+    </div>
+      <hr class="divider">
+    <div class="image-post">
+        <img style="width: 100%;" src="{{ post.image.url }}" alt="{{ post.caption }}">
+    </a>
+    </div>
+    <div class="comment-section">
+      <div class="comment-icons">
+        <div class="post-heart">
+          <a href="/like/{{ post.id }}"><i class="fas fa-heart" style="font-size:25px;color:black;color: #ec3c3c;"></i></a>
+        </div>
+        <div class="comment">
+          <a href="#"><i class="far fa-comment" style="font-size:25px;color:black;"></i></a>
+        </div>
+        <div class="telegram">
+          <a href="#"><i class="fab fa-telegram-plane" style="font-size:25px;color:black;"></i></a>
+        </div>
+
+      </div>
+      <div class="comment-container">
+      <div class="likes">
+        <p>{{ post.likes }} Likes</p>
+      </div>
+      <div class="comment-list">
+            {% for comment in post.comments.all|slice:":2" %}
+          <p class="comments-username">{{ comment.user.username }}  <span style="font-size: 14px;font-weight:initial" class="comments-description">{{ comment.description }}</span> </p>
+            {% endfor %}
+
+      </div>
+      <div class="posttime">
+        <p class="postedtime" >{{ post.posted_on |naturaltime  }} </p>
+      </div>
+      </div>
+      <div class="comment-area" id="comment-area">
+
+          <form action="/add_comment" method="post">
+              {% csrf_token %}
+                <input class="description-input" type="text" name="description" placeholder="Add a comment..." />
+                <input class="post-input" type="hidden" name="demo" value="{{ post.id }}"/>
+                <input class="comment-post" type="submit" value="Post" />
+        </form>
+
+
+      </div>
+    </div>
+    </div>
+
+
+      {% endfor %}
+
+
+  </div>
+
+{% else %}
+  <p>You are not logged into</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
