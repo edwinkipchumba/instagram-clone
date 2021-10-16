@@ -29,3 +29,17 @@ class Post(models.Model):
 
     def __str__(self):
         return self.caption
+    
+    # class comment
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post_linked = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    description = models.CharField(max_length=500)
+    comment_posted_on = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return "Comment by {} on {}".format(self.user.username, self.post_linked.caption)
+
+    class Meta:
+        ordering = ('-comment_posted_on',)
+    
