@@ -63,10 +63,11 @@ As a user of the application can be able to:
 * Open Terminal {Ctrl+Alt+T}
 
 ```
-$git clone https://github.com/edwinkipchumba/gallery-app
+$git clone https://github.com/edwinkipchumba/instagram-clone
+
 ```
 ```
-$cd gallery
+$cd instagram-clone
 ```
 
 * open based on the text editor you have.
@@ -81,9 +82,23 @@ $ source virtual/bin/activate
 
 $ curl https://bootstrap.pypa.io/get-pip.py | python
 
-* Installing Django and other Modules
+* Install Django Dependencies
 
-$ see Requirements.txt
+$ pip install -r Requirements.txt
+
+## Setup Database
+
+* setup your database User,Password, Host then make migrations
+
+```
+$ python manage.py makemigrations
+```
+
+## Now migrate
+
+```
+$python manage.py migrate
+```
 
 * To run the application, in your terminal:
 
