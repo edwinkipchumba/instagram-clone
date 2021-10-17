@@ -10,8 +10,7 @@ This is an Instagram clone where people share their images and videos for other 
 
 <img src="static/../instagram/static/images/Screenshot%20from%202021-10-17%2016-22-48.png">
 
-<img src="static/../picts/static/img/home.png">
-<img src="static/../picts/static/img/Screenshot%20from%202021-10-10%2022-16-50.png">
+<img src="static/../instagram/static/images/002.png">
 
 ## Live page
 
