@@ -10,7 +10,7 @@
       <img src="{{user.profile.profile_photo.url}}" alt="{{user.profile_photo.url}}" width="200" height="200"
         class="rounded-circle account-img">
         {% else %}
-        <i style="font-size:100px;color:#be48ae" class="fa fa-user" aria-hidden="true"></i>
+        <i style="font-size:100px;color:#080808" class="fa fa-user" aria-hidden="true"></i>
         {% endif %}
     </div>
     <div class="col-md-3">
@@ -43,7 +43,7 @@
             <p><a href="{% url 'users_profile' photo.user.id %}"><img class="profile_photo"
                   src="{{ photo.user.profile.profile_photo.url }}" alt="{{ photo.profile.name }}"></p>
                   {% else %}
-                  <i style="font-size:100px;color:#be488d" class="fa fa-user" aria-hidden="true"></i>
+                  <i style="font-size:100px;color:#1d1c1c" class="fa fa-user" aria-hidden="true"></i>
                   {% endif %}
           </div>
           <div class="col-md-2">

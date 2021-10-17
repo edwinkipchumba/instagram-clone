@@ -47,7 +47,7 @@
         <form action="{% url 'commentFunction' photo_id=photo.id %}" method="post">
           {% csrf_token %}
           {% bootstrap_form comment_form %}
-          <input type="submit" class="btn btn-success btn-lg" style="margin-bottom: 10px;" value="Comment">
+          <input type="submit" class="btn btn-primary btn-lg" style="margin-bottom: 10px;" value="Comment">
         </form>
       </div>
 
