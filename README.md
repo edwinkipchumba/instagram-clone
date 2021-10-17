@@ -111,4 +111,4 @@ If you find a bug, kindly feel free to comment an issue here and inlcude their c
 
 ## License
 
-https://github.com/edwinkipchumba/gallery-app/blob/master/LICENSE
+https://github.com/edwinkipchumba/instagram-clone/blob/master/LICENSE
