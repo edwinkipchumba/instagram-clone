@@ -43,10 +43,10 @@ As a user of the application can be able to:
 | Behaviour | Input | Output |
 | :-----------------| :-----------------: | ------------------: |
 | Admin Authentication | On demand | Access Admin dashboard |
-| Display all photos | Home page | Clickable links to open any photos in a model |
-| Display single photos on click | On click | All details should be viewed |
-| To add a photo | Through Admin dashboard | Add and add categories and tag location of photo |
-| To edit a photo | Through Admin dashboard | Redirected to the photo form details |
+| User Authentication | On demand,Verify emails before proceeding | Access Admin dashboard |
+| Display all images with comments and likes | Home page | Clickable links to open any images in a model |
+| Display single images on model | On click | All details should be viewed |
+| To add an image | Through Admin dashboard and homepage | Click on add and  |
 | To delete a photo | Through Admin dashboard | Click on photo and confirm by deleting button |
 | To search a photo | Enter text in search bar | Users can search by category |
 | To filter by location | click drop-down menu on navbar | Users can view photos by location |
