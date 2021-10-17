@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import django_heroku
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,8 +38,10 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'instagram',
-    
-    
+    'crispy_forms',
+    'cloudinary',
+    'bootstrap4',
+    'bootstrap3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,7 +88,7 @@ WSGI_APPLICATION = 'instaclone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'instaclone',
+        'NAME':'insta',
         'USER':'edu',
         'PASSWORD':'kmox002',
     }
@@ -144,4 +150,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# setting configuration parameters globally
+cloudinary.config( 
+  cloud_name = "moringa-dev", 
+  api_key = "634372948129142", 
+  api_secret = "De--YnRdHaaFQ1tlZx6DwYChcZg",
+  
+)
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())

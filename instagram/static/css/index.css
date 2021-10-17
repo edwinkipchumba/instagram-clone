@@ -1,0 +1,63 @@
+body{
+  font-size: 25px;
+  /* background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeAPZrfCaQXgzSlczhi_qzsfP-w6szAGSTew&usqp=CAU'); */
+  /* background-size: auto;
+  background-position: 0%;
+  padding-top: 5px;
+  padding-bottom: 5px; */
+  /* background-color: rgb(7, 6, 7); */
+}
+/* .photo {
+  margin-bottom: 2rem;
+} */
+.profile_photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+.username {
+  color: black;
+}
+nav {
+  color: #0d0d0e !important;
+  height: 8vh !important;
+  font-size: 25;
+  padding-top: 1vh;
+}
+/* a {
+  color: wheat;
+  font-weight: 900;
+} */
+h2,h1 {
+  color: #141314;
+}
+.img-thumbnail {
+  cursor: pointer;
+  border-radius: 6px;
+}
+.gal-item {
+  float: left !important;
+}
+
+.footer a {
+  color: #500ad1 !important;
+}
+img {
+  width: 50%;
+}
+.pull-right, .subscribe {
+  color: white !important;
+}
+.menu {
+  color: white !important;
+}
+
+.name {
+  padding-top: 8%;
+  color: hsl(251, 96%, 29%);
+  text-align: center;
+}
+.slide {
+  width: auto;
+}
+
