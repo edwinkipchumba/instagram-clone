@@ -1,15 +1,11 @@
 body{
-  font-size: 25px;
-  /* background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeAPZrfCaQXgzSlczhi_qzsfP-w6szAGSTew&usqp=CAU'); */
-  /* background-size: auto;
-  background-position: 0%;
-  padding-top: 5px;
-  padding-bottom: 5px; */
-  /* background-color: rgb(7, 6, 7); */
+  overflow-x: hidden;
+  padding:0px;
+  margin:0px;
+  font-size: 20px;
+  
 }
-/* .photo {
-  margin-bottom: 2rem;
-} */
+
 .profile_photo {
   width: 60px;
   height: 60px;
@@ -24,10 +20,7 @@ nav {
   font-size: 25;
   padding-top: 1vh;
 }
-/* a {
-  color: wheat;
-  font-weight: 900;
-} */
+
 h2,h1 {
   color: #141314;
 }
