@@ -1,118 +1,200 @@
-from django.shortcuts import render,redirect
-from django.urls import reverse
-
-from django.template import loader, Context
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect, JsonResponse
+from django.contrib.auth.decorators import login_required
+from .forms import SignUpForm, UpdateUserForm, UpdateUserProfileForm, PostForm, CommentForm
 from django.contrib.auth import login, authenticate
-from .models import Post, Profile, Comment, Like
-from .forms import PostForm, ProfileForm
+from .models import Post, Comment, Profile, Follow
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.views.generic import RedirectView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
 
-# Create your views here.
-def home(request):
-    template = loader.get_template('instagram/home.html')
-
-    if request.user.is_anonymous:
-        context = {}
-        return HttpResponse(template.render(context, request))
-
-    posts = Post.objects.all()
-    profile = Profile.objects.get(user=request.user)
-    comments = Comment.objects.all()
-    context = {'posts': posts, 'profile': profile, 'comments': comments}
-    return HttpResponse(template.render(context, request))
-
-# login
-def login_user(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return HttpResponse("user logged in ")
-    else:
-        return HttpResponse("user ot logged in ")
-
+# signup
 def signup(request):
-    pass
-
-# user profile
-def user_profile(request, username):
-    template = loader.get_template('instagram/profile.html')
-    profile = Profile.objects.get(user=request.user)
-    posts = Post.objects.filter(author__user__username=request.user.username)
-    # posts = Post.objects.all()
-    context = {'profile': profile, 'posts': posts}
-    return HttpResponse(template.render(context, request))
-
-# comment
-def add_comment(request):
-    if request.POST:
-        description, id = request.POST['description'], request.POST['demo']
-        post = Post.objects.get(pk=id)
-        if description is not None:
-            Comment.objects.create(post_linked=post, description=description, user=request.user)
-            return redirect(reverse('home'))
-        
-        # like post
-def like_post(request, postid):
-    post = Post.objects.get(id=postid)
-    try:
-        is_Liked = Like.objects.get(post_linked=post, user__username=request.user.username)
-        Like.objects.filter(post_linked=post, user__username=request.user.username).delete()
-        post.likes -= 1
-    except Like.DoesNotExist:
-
-        Like.objects.create(post_linked=post, user=request.user)
-        post.likes += 1
-    post.save()
-    return redirect(reverse('home'))
-
-# adding post
-def add_post(request):
-    template = loader.get_template('instagram/post.html')
-    profile = Profile.objects.get(user=request.user)
-    if request.method == "POST":
-        profile = Profile.objects.get(user=request.user)
-        form = PostForm(request.POST, request.FILES)
-
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            fs = form.save(commit=False)
-            fs.author = profile
-            fs.save()
-            return redirect(reverse('home'))
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('index')
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+
+@login_required(login_url='login')
+def index(request):
+    images = Post.objects.all()
+    users = User.objects.exclude(id=request.user.id)
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user.profile
+            post.save()
+            return HttpResponseRedirect(request.path_info)
     else:
         form = PostForm()
-        pass
+    params = {
+        'images': images,
+        'form': form,
+        'users': users,
 
-    context = {'form': form ,'profile':profile}
-    return HttpResponse(template.render(context, request))
+    }
+    return render(request, 'instagram/index.html', params)
 
-#   edit profile
-def edit_profile(request, username):
-    template = loader.get_template('instagram/edit_profile.html')
-    user = User.objects.get(username=request.user.username)
-    profile = Profile.objects.get(user=request.user)
-
+# profile user
+@login_required(login_url='login')
+def profile(request, username):
+    images = request.user.profile.posts.all()
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            user.username = form.cleaned_data['username']
-            user.first_name = form.cleaned_data['first_name']
-            user.save()
-            profile.biography = form.cleaned_data['biography']
-            profile.profile_pic = form.cleaned_data['profile_pic']
-            profile.phone_number = form.cleaned_data['phone_number']
-            profile.save()
-            return redirect(reverse('home'))
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        prof_form = UpdateUserProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if user_form.is_valid() and prof_form.is_valid():
+            user_form.save()
+            prof_form.save()
+            return HttpResponseRedirect(request.path_info)
     else:
+        user_form = UpdateUserForm(instance=request.user)
+        prof_form = UpdateUserProfileForm(instance=request.user.profile)
+    params = {
+        'user_form': user_form,
+        'prof_form': prof_form,
+        'images': images,
 
-        form = ProfileForm(initial={'username': username,
-                                    'first_name': user.first_name,
-                                    'last_name': user.last_name,
-                                    'phone_number': profile.phone_number,
-                                    # 'profile_pic': profile.profile_pic.url,
-                                    'biography': profile.biography})
+    }
+    return render(request, 'instagram/profile.html', params)
 
-    context = {'form': form, 'user': user, 'profile':profile}
-    return HttpResponse(template.render(context, request))
+# user profile
+
+@login_required(login_url='login')
+def user_profile(request, username):
+    user_prof = get_object_or_404(User, username=username)
+    if request.user == user_prof:
+        return redirect('profile', username=request.user.username)
+    user_posts = user_prof.profile.posts.all()
+    
+    followers = Follow.objects.filter(followed=user_prof.profile)
+    follow_status = None
+    for follower in followers:
+        if request.user.profile == follower.follower:
+            follow_status = True
+        else:
+            follow_status = False
+    params = {
+        'user_prof': user_prof,
+        'user_posts': user_posts,
+        'followers': followers,
+        'follow_status': follow_status
+    }
+    print(followers)
+    return render(request, 'instagram/user_profile.html', params)
+
+# post comment
+@login_required(login_url='login')
+def post_comment(request, id):
+    image = get_object_or_404(Post, pk=id)
+    is_liked = False
+    if image.likes.filter(id=request.user.id).exists():
+        is_liked = True
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            savecomment = form.save(commit=False)
+            savecomment.post = image
+            savecomment.user = request.user.profile
+            savecomment.save()
+            return HttpResponseRedirect(request.path_info)
+    else:
+        form = CommentForm()
+    params = {
+        'image': image,
+        'form': form,
+        'is_liked': is_liked,
+        'total_likes': image.total_likes()
+    }
+    return render(request, 'instagram/single_post.html', params)
+
+# toggle post likes
+class PostLikeToggle(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        id = self.kwargs.get('id')
+        print(id)
+        obj = get_object_or_404(Post, pk=id)
+        url_ = obj.get_absolute_url()
+        user = self.request.user
+        if user in obj.likes.all():
+            obj.likes.remove(user)
+        else:
+            obj.likes.add(user)
+        return url_
+    
+
+class PostLikeAPIToggle(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, id=None, format=None):
+        # id = self.kwargs.get('id')
+        obj = get_object_or_404(Post, pk=id)
+        url_ = obj.get_absolute_url()
+        user = self.request.user
+        updated = False
+        liked = False
+        if user in obj.likes.all():
+            liked = False
+            obj.likes.remove(user)
+        else:
+            liked = True
+            obj.likes.add(user)
+        updated = True
+        data = {
+
+            'updated': updated,
+            'liked': liked,
+        }
+        print(data)
+        return Response(data)
+    
+# like post
+def like_post(request):
+    # image = get_object_or_404(Post, id=request.POST.get('image_id'))
+    image = get_object_or_404(Post, id=request.POST.get('id'))
+    is_liked = False
+    if image.likes.filter(id=request.user.id).exists():
+        image.likes.remove(request.user)
+        is_liked = False
+    else:
+        image.likes.add(request.user)
+        is_liked = False
+
+    params = {
+        'image': image,
+        'is_liked': is_liked,
+        'total_likes': image.total_likes()
+    }
+    if request.is_ajax():
+        html = render_to_string('instagram/like_section.html', params, request=request)
+        return JsonResponse({'form': html})
+    
+    # search profile
+@login_required(login_url='login')
+def search_profile(request):
+    if 'search_user' in request.GET and request.GET['search_user']:
+        name = request.GET.get("search_user")
+        results = Profile.search_profile(name)
+        print(results)
+        message = f'name'
+        params = {
+            'results': results,
+            'message': message
+        }
+        return render(request, 'instagram/results.html', params)
+    else:
+        message = "You haven't searched for any image category"
+    return render(request, 'instagram/results.html', {'message': message})

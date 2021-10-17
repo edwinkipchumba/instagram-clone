@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+<!--  -->
 
 {% block title %}Home{% endblock %}
 
@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% if user.is_authenticated %}
 
-      {% include "insta/nav.html" %}
+      {% include "instagram/nav.html" %}
 
   <div class="posts-list">
     {% for post in posts %}

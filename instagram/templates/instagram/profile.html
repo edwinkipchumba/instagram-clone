@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}{{ profile.user.first_name }} {{ profile.user.last_name }} (@{{ profile.user.username }} ){% endblock %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+
+
+{% if user.is_authenticated %}
+
+  {% include "instagram/nav.html" %}
+
+  <div class ="profile-section">
+    <div class="profile-image">
+      {% if not profile.profile_pic %}
+          <img class="rounded-circle my-avatar"  src="{% static 'img/avatar-2.jpg' %}"  alt="{{ profile.user.username }}" data-holder-rendered="true">
+        {% else %}
+          <img class="rounded-circle my-avatar" src="{{ profile.profile_pic.url }}" alt="{{ profile.user.username }}"  data-holder-rendered="true">
+        {% endif %}
+    </div>
+    <div class="profile-bio-section">
+      <div class="profile-details">
+          <div class="profile-name">
+            <h2 class="profile-name">{{ profile.user.username }}</h2>
+          </div>
+          <div style="padding-top: 8%;" class="Edit-profile">
+            <a  class="Edit-profile-text" href="/edit/{{profile.user.username}}">Edit Profile</a>
+          </div>
+          <div class="settings-icon">
+              <i class="fas fa-cog"></i>
+          </div>
+          <div class="posts-count">
+              <p ><span class="sp-posts-count">{{ posts.count }}</span>&nbsp;Post</p>
+          </div>
+          <div class="followers-count">
+            <p><span class="sp-followers-count">{{ 210 }}</span>&nbsp;followers</p>
+          </div>
+          <div class="following-count">
+            <p><span class="sp-following-count">{{ 290 }}</span>&nbsp;following</p>
+          </div>
+      </div>
+      <div class="profile-bio">
+        <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+        {% for bio in profile.split_biography %}
+          <p>{{ bio }}</p>
+
+        {% endfor %}
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+      <div class="post-icon">
+          <p><i class="fas fa-th "></i>&nbsp;POSTS</p>
+      </div>
+      <div class="igtv-icon">
+          <p><i class="fas fa-tv"></i>&nbsp;IGTV</p>
+      </div>
+      <div class="saved-icon">
+          <p><i class="far fa-bookmark"></i>&nbsp;SAVED</p>
+      </div>
+      <div class="tagged-icon">
+            <p><i class="far fa-id-badge"></i>&nbsp;TAGGED</p>
+      </div>
+  </div>
+
+  <div class="image-gallery">
+      {% for post in posts%}
+      <div class="image">
+          <img src={{post.image.url}} alt="Snow" style="width:100%">
+      </div>
+      {% endfor %}
+
+  </div>
+
+{% else %}
+  <p>You are not logged into</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
