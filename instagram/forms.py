@@ -1,13 +1,39 @@
 from django import forms
-from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import Profile, Post, Comment
 
-from .models import Post, Profile
+# class signup form
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
 
-class PostForm(ModelForm):
     class Meta:
-        model = Post
-        fields = ['image', 'location', 'caption']
-        
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')        
+    
+    
+    # update userform
+class UpdateUserForm(forms.ModelForm):
+    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
+
+    class Meta:
+        model = User
+        fields = ('username', 'email')
+
+    # update user profile
+class UpdateUserProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['name', 'location', 'profile_picture', 'bio']
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     # profile form
 class ProfileForm(forms.Form):
